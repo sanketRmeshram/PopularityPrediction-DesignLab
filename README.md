@@ -1,8 +1,7 @@
 # PopularityPrediction-DesignLab
 ## Data
-Download the data :  
-> wget https://drive.google.com/file/d/1s3-u2hu8xdHsl8h3KfSHyNkaxJYFAKrc/view?usp=sharing 
+Install the unrar on linux (Cent-Os Distribution in our case) :
+> https://www.tecmint.com/how-to-open-extract-and-create-rar-files-in-linux/
 
-Then unzip the data : 
->  unzip data
-
+unrar the data : 
+> unrar x data.rar
