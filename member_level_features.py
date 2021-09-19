@@ -3,6 +3,8 @@ import pickle
 
 import pandas as pd
 from math import log
+import numpy as np
+from sklearn.decomposition import NMF
 
 def make_social_graph_of_grp_members(grp_id,groupjoin,ersvp,new_grp_event) :
     member_set = set()
@@ -86,6 +88,24 @@ def entropy(a) :
     return ans
         
     
+def get_NMF(mat):
+    model = NMF(n_components =6 )
+    model.fit(mat)
+    return model.transform(mat)
+
+def get_NMF_from_df(df):
+    temp = df.copy()
+    temp.drop(['member', 'group_id'], axis=1, inplace=True)
+    temp = np.array(temp)
+    nmf = get_NMF(temp)
+    nmf = pd.DataFrame(nmf, columns = ['r1','r2','r3','r4','r5','r6'])
+    nmf["member"] = df["member"]
+    nmf["group_id"] = df["group_id"]
+    nmf = nmf [["member","group_id",'r1','r2','r3','r4','r5','r6']]
+    return nmf
+    
+    
+    
 
 def make_member_level_features(grp_id,groupjoin,ersvp,new_grp_event,grp_to_memberId_to_attended_events,memberId_to_groups,grp_to_valid_events) :
     members,edges =  make_social_graph_of_grp_members(grp_id,groupjoin,ersvp,new_grp_event)
@@ -144,6 +164,9 @@ def make_member_level_features(grp_id,groupjoin,ersvp,new_grp_event,grp_to_membe
 
     df = pd.DataFrame(member_level_features)
     df.to_csv("member_level_features/"+str(grp_id) + ".csv",index=False)
+    nmf = get_NMF_from_df(df)
+    nmf.to_csv("NMF_member_level_features/"+str(grp_id) + ".csv",index=False)
+    
         
 
 def main():
