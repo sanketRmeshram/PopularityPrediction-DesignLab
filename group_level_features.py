@@ -205,10 +205,14 @@ def make_group_level_features(group_names,grp_to_valid_events,ersvp,groupjoin,ne
     group_level_features["g13"] = []
     group_level_features["g14"] = []    
     
-    
+    y = set([int(str(x).split('/')[-1].split('.')[0]) for x in Path("group_level_features").iterdir()])
     tot = 0
     ind = 1
     for grp_id in group_names:
+        if grp_id in y:
+            print(ind)
+            ind+=
+            continue
         df = pd.read_csv("member_level_features/"+str(grp_id) + ".csv")
         if grp_id in grp_to_valid_events :     
             get_groups_features(group_level_features,grp_id,ersvp,groupjoin,new_grp_event,grp_to_valid_events[grp_id],list(df['member']),mlat,mlon,elat,elon)
