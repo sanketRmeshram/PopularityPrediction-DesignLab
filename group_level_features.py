@@ -134,6 +134,22 @@ def get_avg_var_sum_rsvp(list_of_events,ersvp):
 
 def get_groups_features(group_level_features,grp_id,ersvp,groupjoin,new_grp_event,list_of_events,list_of_members,mlat,mlon,elat,elon) :
 
+    group_level_features["group_id"] = []
+    group_level_features["g1"] = []
+    group_level_features["g2"] = []
+    group_level_features["g3"] = []
+    group_level_features["g4"] = []
+    group_level_features["g5"] = []
+    group_level_features["g6"] = []
+    group_level_features["g7"] = []
+    group_level_features["g8"] = []
+    group_level_features["g9"] = []
+    group_level_features["g10"] = []
+    group_level_features["g11"] = []
+    group_level_features["g12"] = []    
+    group_level_features["g13"] = []
+    group_level_features["g14"] = []  
+    
     group_level_features["group_id"].append(grp_id)
     group_level_features["g1"].append(None)
     
@@ -201,7 +217,8 @@ def make_group_level_features(group_names,grp_to_valid_events,ersvp,groupjoin,ne
             tot+=1
         print(ind)
         ind+=1
-        
+        df = pd.DataFrame(group_level_features)
+        df.to_csv("group_level_features/"+ str(grp_id) +".csv",index=False)
     print("****** \n \n\n   " ,tot,"  \n\n\n\n\n  ********** ")
         
     df = pd.DataFrame(group_level_features)
