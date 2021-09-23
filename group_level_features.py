@@ -211,7 +211,7 @@ def make_group_level_features(group_names,grp_to_valid_events,ersvp,groupjoin,ne
     for grp_id in group_names:
         if grp_id in y:
             print(ind)
-            ind+=
+            ind+=1
             continue
         df = pd.read_csv("member_level_features/"+str(grp_id) + ".csv")
         if grp_id in grp_to_valid_events :     
