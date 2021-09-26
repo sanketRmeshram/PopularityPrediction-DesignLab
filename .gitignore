@@ -1,4 +1,4 @@
 data/*
-# NMF_member_level_features/.ipynb_checkpoints/*
-# member_level_features/.ipynb_checkpoints/*
-# __pycache__/*
+NMF_member_level_features/.ipynb_checkpoints/*
+member_level_features/.ipynb_checkpoints/*
+__pycache__/*
