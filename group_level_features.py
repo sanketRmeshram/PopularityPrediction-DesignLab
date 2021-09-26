@@ -225,8 +225,8 @@ def make_group_level_features(group_names,grp_to_valid_events,ersvp,groupjoin,ne
         df.to_csv("group_level_features/"+ str(grp_id) +".csv",index=False)
     print("****** \n \n\n   " ,tot,"  \n\n\n\n\n  ********** ")
         
-    df = pd.DataFrame(group_level_features)
-    df.to_csv("group_level_features/group_level_features.csv",index=False)
+#     df = pd.DataFrame(group_level_features)
+#     df.to_csv("group_level_features/group_level_features.csv",index=False)
     
     
         
