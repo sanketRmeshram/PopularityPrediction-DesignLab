@@ -151,7 +151,8 @@ def make_member_level_features(grp_id, groupjoin, ersvp, new_grp_event, grp_to_m
         member_level_features["m5"].append(entropy(
             [len(grp_to_valid_events[g_id]) for g_id in memberId_to_groups[member]]))
         member_level_features["m6"].append(entropy([len(grp_to_memberId_to_attended_events[g_id][member])/len(
-            grp_to_valid_events[g_id]) for g_id in memberId_to_groups[member] if member in grp_to_memberId_to_attended_events[g_id]]))
+            grp_to_valid_events[g_id]) for g_id in memberId_to_groups[member] if member in grp_to_memberId_to_attended_events[g_id] and len(
+            grp_to_valid_events[g_id])>0]))
 #     print(member_level_features)
     for member in members:
         if len(adjacency_list[member]):
