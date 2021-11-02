@@ -114,6 +114,8 @@ def get_NMF_from_df(df):
 def make_member_level_features(grp_id, groupjoin, ersvp, new_grp_event, grp_to_memberId_to_attended_events, memberId_to_groups, grp_to_valid_events,window):
     members, edges = make_social_graph_of_grp_members(
         grp_id, groupjoin, ersvp, new_grp_event)
+    if(len(members)==0) :
+        return
     adjacency_list = {}
     for member in members:
         adjacency_list[member] = []
