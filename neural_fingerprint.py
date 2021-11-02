@@ -26,7 +26,7 @@ class NFP(Module):
         self.m = 10  # length of fingerprint
         self.t = 6   #  length of role distribution
         
-        self.f = fL = torch.tensor((1, self.m), 0)
+        self.f = torch.tensor((1, self.m), 0)
         self.H = [ nn.linear(self.t,self.m ) for _ in range(self.R+1)]
         self.W = [torch.tensor(.2, requires_grad=True) for _ in range(self.R+1)]
         self.group_level_layer_weights = nn.linear(self.group_level_input, self.group_level_output)
@@ -65,5 +65,7 @@ class NFP(Module):
         # merged features NN
 
         return merged_output
+    
+    
 
 
