@@ -1,4 +1,11 @@
 data/*
-NMF_member_level_features/.ipynb_checkpoints/*
+group_level_features/.ipynb_checkpoints/*
+graph_windowwise/.ipynb_checkpoints/*
+group_level_features/.ipynb_checkpoints/*
+group_level_features_windowwise/.ipynb_checkpoints/*
 member_level_features/.ipynb_checkpoints/*
+member_level_features_windowwise/.ipynb_checkpoints/*
+NMF_member_level_features/.ipynb_checkpoints/*
+NMF_member_level_features_windowwise/.ipynb_checkpoints/*
+target_class_windowwise/.ipynb_checkpoints/*
 __pycache__/*
