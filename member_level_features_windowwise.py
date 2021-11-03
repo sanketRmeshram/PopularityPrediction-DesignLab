@@ -211,7 +211,7 @@ def main():
         valid_events = set(grp_to_valid_events[grp_id])
         for window in range(len(events)-window_size+1):
             new_grp_event[grp_id] = events[window:window+10]
-            grp_to_valid_events[grp_id] = [i for i in new_grp_event[grp_id] if i in valid_events]
+            grp_to_valid_events[grp_id] = [i for i,j in new_grp_event[grp_id] if i in valid_events]
             make_member_level_features(grp_id, groupjoin, ersvp, new_grp_event,
                                    grp_to_memberId_to_attended_events, memberId_to_groups, grp_to_valid_events,window)
 

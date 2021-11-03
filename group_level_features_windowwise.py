@@ -118,6 +118,7 @@ def main():
     valid_windows = [str(x).split('/')[-1].split('.')[0].split('_') for x in Path("member_level_features_windowwise").iterdir()]
     elat = pickle.load(open("data/elat","rb"))
     elon = pickle.load(open("data/elon","rb"))
+    
     mlat = pickle.load(open("data/mlat","rb"))
     mlon = pickle.load(open("data/mlon","rb"))
     groupjoin = pickle.load(open("data/groupjoin","rb"))
@@ -127,7 +128,7 @@ def main():
     for grp,window in valid_windows:
         grp_id = int(grp)
         window_index = int(window) 
-        list_of_events = new_grp_event[grp_id][window_index:window_index+10]
+        list_of_events = [ i for i,j in new_grp_event[grp_id][window_index:window_index+10]]
         list_of_members,adj,edges = get_graph(grp_id,window)
         
         group_level_features = {}
