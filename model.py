@@ -21,16 +21,6 @@ from torch.optim import SGD
 from torch.nn import BCELoss
 from torch.nn.init import kaiming_uniform_
 from torch.nn.init import xavier_uniform_
-'''
-* performs element wise multiplication
-@ performs matrix multication
-
-linier(input_size,output_size)
-
-model = nn.Linear(3, 2)
-print(model.weight) size (2,3)
-print(model.bias)  (1,2)
-'''
 
 
 class NFP(Module):
@@ -62,23 +52,17 @@ class NFP(Module):
         for i in graph :
             r[i] = x_member[i]
             r[i] = torch.reshape(r[i],(1,self.t)).float()
-#         print("r[0][0] : " , r[0][0])
 
         for L in range(0,self.R+1): 
-#             print(L)
+
             for a in graph:
-#                 print("     :",a)
                 v1 = r[a] +sum([r[i] for i in graph[i]])
                 
-#                 print(v1,self.H[L])
-#                 print("v1 :" ,v1.shape)
-#                 print("H[L] : ",self.H[L].shape)
-#                 print(v1 @ self.H[L])
-#                 print(torch.matmul(v1 , self.H[L]))
+
                 v2 = self.Sigmoid(v1 @ self.H[L])
-#                 print("r[a]  : " ,r[a].shape)
+
                 FL = self.Softmax(v2 * self.W[L])
-#                 print("FL : " ,FL.shape)
+
                 self.f = self.f+FL
         # return f
         # member level features NN
@@ -86,8 +70,6 @@ class NFP(Module):
         # group level features NN
         group_perceptron_output = self.Sigmoid(self.group_level_layer_weights(x_group).double())
         group_perceptron_output = torch.reshape(group_perceptron_output,(1,self.group_level_output)).float()
-#         print("group_perceptron_output : ",group_perceptron_output.shape)
-#         print("self.f : " , self.f.shape)
         # group level features NN
 
         # merged features NN
@@ -109,27 +91,41 @@ if __name__=="__main__":
     data = [ [(util.get_member_role_vectors(grp,window),util.get_graph(grp,window),util.get_group_level_featues(grp,window)),util.get_output(grp,window)] for grp,window in now]
     
     train,test = split_train_test(data)
-    print("split done")
+
     model = NFP(6,7)
+    
+    
+#     for name, param in model.named_parameters():
+#         if param.requires_grad:
+#             print (name, param.data)
+            
+            
     loss_fn = nn.CrossEntropyLoss()
+    learning_rate = .9
+    optimizer = torch.optim.SGD(model.parameters(), learning_rate)
     for x,y in train :
-        pred = model(x)
-#         pred = torch.flatten(pred)
+        pred = model.forward(x)
         print( "pred : ",pred,pred.shape)
-        print("y : ",y,y.shape)
         target = []
         if y[0]==1:
             target.append(0)
-        elif y[0]==1:
+        elif y[1]==1:
             target.append(1)
         else :
             target.append(2)
         target = torch.tensor(target).long()
-        print("target : ",target)
-#         print("pred , target : ",pred.view( -1),target.view( -1))
+
         loss = loss_fn(pred,target)
-        print("loss  : ",loss)
         loss.backward(retain_graph=True)
+        
+        optimizer.step()
+        optimizer.zero_grad()
+        
+        
+#     for name, param in model.named_parameters():
+#         if param.requires_grad:
+#             print (name, param.data)
+        
         
         
 
