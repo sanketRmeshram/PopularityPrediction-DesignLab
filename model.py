@@ -108,7 +108,7 @@ def accuracy(output,target):
 
 def main(learning_rate, radius, group_level_output):
     
-    now = util.get_group_and_window()[:10]
+    now = util.get_group_and_window()
     data = [ [(util.get_member_role_vectors(grp,window),util.get_graph(grp,window),util.get_group_level_featues(grp,window)),util.get_output(grp,window)] for grp,window in now]
     
     train,test = split_train_test(data)
