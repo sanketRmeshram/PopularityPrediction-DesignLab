@@ -5,6 +5,7 @@ from torch import nn
 import torch.nn.functional as F
 import util
 # pytorch mlp for binary classification
+import numpy
 from numpy import vstack
 from pandas import read_csv
 from sklearn.preprocessing import LabelEncoder
@@ -38,8 +39,8 @@ class NFP(Module):
         self.W = [torch.tensor(.2, requires_grad=True).float() for _ in range(self.R+1)]
         self.group_level_layer_weights = nn.Linear(self.group_level_input, self.group_level_output)
         self.merged_layer_weights = nn.Linear(self.m + self.group_level_output,3)
-        self.Sigmoid = Sigmoid()
-        self.Softmax = Softmax()
+#         self.Sigmoid = Sigmoid()
+#         self.Softmax = Softmax()
 
 
 
@@ -59,26 +60,30 @@ class NFP(Module):
                 v1 = r[a] +sum([r[i] for i in graph[i]])
                 
 
-                v2 = self.Sigmoid(v1 @ self.H[L])
-
-                FL = self.Softmax(v2 * self.W[L])
+                v2 = torch.sigmoid(v1 @ self.H[L])
+                FL = F.softmax(v2 * self.W[L],dim=1)
 
                 self.f = self.f+FL
         # return f
         # member level features NN
 
         # group level features NN
-        group_perceptron_output = self.Sigmoid(self.group_level_layer_weights(x_group).double())
+        group_perceptron_output = torch.sigmoid(self.group_level_layer_weights(x_group).float())
         group_perceptron_output = torch.reshape(group_perceptron_output,(1,self.group_level_output)).float()
         # group level features NN
 
         # merged features NN
-        merged_input = torch.cat((self.f, group_perceptron_output),1)
+        merged_input = torch.cat((self.f, group_perceptron_output),dim=1)
 
-        merged_output = self.Softmax(self.merged_layer_weights(merged_input))
+        merged_output = F.softmax(self.merged_layer_weights(merged_input),dim = 1)
         # merged features NN
 
         return merged_output
+    def substract_gradient(self,learning_rate) :
+        for i in range(self.R + 1 ) :
+            self.H[i] =self.H[i] - learning_rate*self.H[i].grad
+            self.W[i] =self.W[i] -  learning_rate*self.W[i].grad
+            
     
 def split_train_test(data) :
     ind = int(.8 * len(data))
@@ -86,26 +91,36 @@ def split_train_test(data) :
     test = data[ind:]
     return train,test
 
-if __name__=="__main__":
+def predict(model,x):
+    pred = model.forward(x)
+#     pred = torch.flatten(pred)
+    out = torch.tensor([0,0,0])
+    _,ind = torch.max(pred, dim=1)
+    out[ind] =1
+    return out
+
+def accuracy(output,target):
+    ans = 0
+    for i in range(len(output)):
+        ans += torch.dot(output[i],target[i])
+    return ans/len(output)
+
+
+def main(learning_rate, radius, group_level_output):
+    
     now = util.get_group_and_window()[:10]
     data = [ [(util.get_member_role_vectors(grp,window),util.get_graph(grp,window),util.get_group_level_featues(grp,window)),util.get_output(grp,window)] for grp,window in now]
     
     train,test = split_train_test(data)
 
-    model = NFP(6,7)
+    model = NFP(radius,group_level_output)
     
-    
-#     for name, param in model.named_parameters():
-#         if param.requires_grad:
-#             print (name, param.data)
-            
             
     loss_fn = nn.CrossEntropyLoss()
-    learning_rate = .9
-    optimizer = torch.optim.SGD(model.parameters(), learning_rate)
+    optimizer = torch.optim.Adam(model.parameters(), learning_rate)
     for x,y in train :
+
         pred = model.forward(x)
-        print( "pred : ",pred,pred.shape)
         target = []
         if y[0]==1:
             target.append(0)
@@ -119,12 +134,18 @@ if __name__=="__main__":
         loss.backward(retain_graph=True)
         
         optimizer.step()
-        optimizer.zero_grad()
+        optimizer.zero_grad()  
+    output = []
+    target = []
+    for x,y in test :
+        output.append(predict(model,x))
+        target.append(y)
+    print("accuracy : " ,accuracy(output,target))
+
+if __name__=="__main__":
+    main(.2,6,7)
+
         
-        
-#     for name, param in model.named_parameters():
-#         if param.requires_grad:
-#             print (name, param.data)
         
         
         
