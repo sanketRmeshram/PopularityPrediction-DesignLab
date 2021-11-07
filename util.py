@@ -19,18 +19,18 @@ def get_graph(grp_id:int,window:int) :
         w = int(w)
         adj[i].append(j)
         adj[j].append(i)
-    return list_of_members,adj
+    return adj
 
 def get_output(grp_id:int,window:int):
     df = pd.read_csv("target_class_windowwise/"+str(grp_id) + "_" + str(window) + ".csv")
-    return torch.tensor(df.iloc[0,:])
+    return torch.tensor(df.iloc[0,:]).float()
 
 def get_member_role_vectors(grp_id:int,window:int):
     df = pd.read_csv("NMF_member_level_features_windowwise/"+str(grp_id) + "_" + str(window) + ".csv")
     ans = {}
     features_cols = list(df.columns)[2:]
     for i in range(len(df)) :
-        ans[int(df.iloc[i,0])] =  torch.tensor( df.iloc[i,:][features_cols])
+        ans[int(df.iloc[i,0])] =  torch.tensor( df.iloc[i,:][features_cols]).float()
         
     return ans
         
@@ -38,7 +38,7 @@ def get_group_level_featues(grp_id:int,window:int):
     df = pd.read_csv("group_level_features_windowwise/"+str(grp_id) + "_" + str(window) + ".csv")
     df.iloc[0,1] = 0
     feature_cols = list(df.columns)[1:]
-    return torch.tensor(df.iloc[0,:][feature_cols] )
+    return torch.tensor(df.iloc[0,:][feature_cols] ).float()
     
     
 def get_group_and_window() :
