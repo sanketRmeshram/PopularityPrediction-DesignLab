@@ -53,3 +53,29 @@ unrar the data :
   - first is group ID
 
 
+
+#
+# Code execution 
+
+- Create an environment with required packages
+  - conda create -n myenv --file requirements.txt 
+- First Unrar the data .
+- Run member\_level\_features\_windowwise.py
+  - **python member\_level\_features\_windowwise.py**
+  - This will generate graphs , member level features, and its NMF
+- Run group\_level\_features\_windowwise.py :
+  - **python group\_level\_features\_windowwise.py**
+  - this will generate group-level features
+- Run the model 
+  - **python model.py**
+- In model.py 
+  - you can set different parameter for **radius ,learning rate and number of hidden layer nodes**
+- util.py :
+  - This contains utility funtions :
+    - get\_graph
+    - get\_output
+    - get\_member\_role\_vectors
+    - get\_group\_level\_featues
+    - get\_group\_and\_window
+  - This function can be used to read the data
+
