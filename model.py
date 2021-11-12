@@ -22,7 +22,7 @@ from torch.optim import SGD
 from torch.nn import BCELoss
 from torch.nn.init import kaiming_uniform_
 from torch.nn.init import xavier_uniform_
-
+import random
 
 class NFP(Module):
     def __init__(self, R, group_level_output):
@@ -108,7 +108,8 @@ def accuracy(output,target):
 
 def main(learning_rate, radius, group_level_output):
     
-    now = util.get_group_and_window()
+    now = util.get_group_and_window()[:60000]
+    random.shuffle(now)
     data = [ [(util.get_member_role_vectors(grp,window),util.get_graph(grp,window),util.get_group_level_featues(grp,window)),util.get_output(grp,window)] for grp,window in now]
     
     train,test = split_train_test(data)
@@ -118,6 +119,7 @@ def main(learning_rate, radius, group_level_output):
             
     loss_fn = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), learning_rate)
+    completed = 0
     for x,y in train :
 
         pred = model.forward(x)
@@ -135,8 +137,14 @@ def main(learning_rate, radius, group_level_output):
         
         optimizer.step()
         optimizer.zero_grad()  
+        completed+=1
+        if completed % 100  == 0 :
+            print("completed : ",completed)
+            torch.save(model.state_dict(), "./model_state")
+      
     output = []
     target = []
+    torch.save(model.state_dict(), "./model_state")
     for x,y in test :
         output.append(predict(model,x))
         target.append(y)

@@ -1,0 +1,2 @@
+completed :  100
+accuracy :  tensor(1.)
